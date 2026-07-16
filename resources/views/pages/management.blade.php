@@ -1,15 +1,15 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', $title)
 
 @section('content_header')
-    <h1>Dashboard Toko Buah</h1>
+    <h1>{{ $title }}</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-body">
-            <p class="mb-0">Selamat datang di sistem point of sale toko buah.</p>
+            <p class="mb-0">{{ $description }}</p>
         </div>
     </div>
 @stop

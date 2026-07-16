@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 4',
+    'title' => 'POS Toko Buah',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>POS</b> Toko Buah',
     'logo_img' => 'vendor/adminlte/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
     'logo_img_alt' => 'AdminLTE Logo',
@@ -83,10 +83,10 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
     'usermenu_image' => false,
-    'usermenu_desc' => false,
+    'usermenu_desc' => 'Pengguna Sistem',
     'usermenu_profile_url' => false,
 
     /*
@@ -117,8 +117,8 @@ return [
     |
     */
 
-    'footer_left' => 'Copyright &copy; 2014-'.date('Y').' <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>. All rights reserved.',
-    'footer_right' => 'Anything you want',
+    'footer_left' => 'Copyright &copy; '.date('Y').' <strong>POS Toko Buah</strong>.',
+    'footer_right' => 'Sistem Point of Sale',
     'preloader' => false,
     'control_sidebar' => false,
     'control_sidebar_theme' => 'dark',
@@ -126,12 +126,12 @@ return [
     // Documentation URL used by the navbar "Documentation" link and the sidebar
     // "View documentation" CTA (false to hide the CTA). Defaults to the in-app
     // docs viewer served at /docs (see the `docs` keys below).
-    'sidebar_docs_url' => '/docs',
+    'sidebar_docs_url' => false,
 
     // Bundled demo/showcase pages (Dashboard v2/v3, Widgets, UI, Forms, Tables,
     // Layout Options, Theme Generate, auth variants, error pages). Set false to
     // skip registering their routes in production.
-    'demo' => true,
+    'demo' => false,
     'demo_middleware' => ['web', 'auth'],
 
     // In-app documentation viewer: renders this package's docs/*.md files at
@@ -211,7 +211,7 @@ return [
     |
     */
 
-    'menu' => [
+    'demo_menu' => [
         // ---- Sidebar: mirrors the AdminLTE 4 demo sidebar ----
         [
             'text' => 'Dashboard',
@@ -368,6 +368,26 @@ return [
         ['text' => 'Important', 'url' => '#', 'icon' => 'bi bi-circle', 'icon_color' => 'danger'],
         ['text' => 'Warning', 'url' => '#', 'icon' => 'bi bi-circle', 'icon_color' => 'warning'],
         ['text' => 'Informational', 'url' => '#', 'icon' => 'bi bi-circle', 'icon_color' => 'info'],
+    ],
+
+    // Menu aplikasi POS.
+    'menu' => [
+        ['text' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'bi bi-speedometer2', 'active' => ['/']],
+        ['header' => 'OPERASIONAL TOKO'],
+        ['text' => 'Kelola User', 'route' => 'management.users', 'icon' => 'bi bi-people', 'active' => ['kelola/user*']],
+        ['text' => 'Kelola Data Buah', 'route' => 'management.fruits', 'icon' => 'bi bi-basket2', 'active' => ['kelola/buah*']],
+        ['text' => 'Kelola Supplier', 'route' => 'management.suppliers', 'icon' => 'bi bi-truck', 'active' => ['kelola/supplier*']],
+        ['text' => 'Kelola Stok', 'route' => 'management.stocks', 'icon' => 'bi bi-box-seam', 'active' => ['kelola/stok*']],
+        ['text' => 'Transaksi Penjualan / Kasir', 'route' => 'cashier', 'icon' => 'bi bi-cart-check', 'active' => ['kasir*']],
+        ['text' => 'Kelola Data Transaksi', 'route' => 'management.transactions', 'icon' => 'bi bi-receipt', 'active' => ['kelola/transaksi*']],
+        [
+            'text' => 'Laporan',
+            'icon' => 'bi bi-bar-chart-line',
+            'submenu' => [
+                ['text' => 'Laporan Penjualan', 'route' => 'reports.sales', 'icon' => 'bi bi-circle', 'icon_active' => 'bi bi-circle-fill', 'active' => ['laporan/penjualan*']],
+                ['text' => 'Laporan Laba Rugi', 'route' => 'reports.profit-loss', 'icon' => 'bi bi-circle', 'icon_active' => 'bi bi-circle-fill', 'active' => ['laporan/laba-rugi*']],
+            ],
+        ],
     ],
 
     /*
