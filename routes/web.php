@@ -1,24 +1,27 @@
 <?php
 
+use App\Http\Controllers\CashierController;
+use App\Http\Controllers\FruitController;
 use App\Http\Controllers\LogoutController;
-use App\Http\Controllers\ManagementPageController;
+use App\Http\Controllers\ProfitLossReportController;
+use App\Http\Controllers\SalesReportController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'dashboard')->name('dashboard');
 
-Route::prefix('kelola')->name('management.')->controller(ManagementPageController::class)->group(function () {
-    Route::get('user', 'users')->name('users');
-    Route::get('buah', 'fruits')->name('fruits');
-    Route::get('supplier', 'suppliers')->name('suppliers');
-    Route::get('stok', 'stocks')->name('stocks');
-    Route::get('transaksi', 'transactions')->name('transactions');
-});
+Route::get('kelola/user', [UserController::class, 'index'])->name('management.users');
+Route::get('kelola/buah', [FruitController::class, 'index'])->name('management.fruits');
+Route::get('kelola/supplier', [SupplierController::class, 'index'])->name('management.suppliers');
+Route::get('kelola/stok', [StockController::class, 'index'])->name('management.stocks');
+Route::get('kelola/transaksi', [TransactionController::class, 'index'])->name('management.transactions');
 
-Route::get('kasir', [ManagementPageController::class, 'cashier'])->name('cashier');
+Route::get('kasir', [CashierController::class, 'index'])->name('cashier');
 
-Route::prefix('laporan')->name('reports.')->controller(ManagementPageController::class)->group(function () {
-    Route::get('penjualan', 'salesReport')->name('sales');
-    Route::get('laba-rugi', 'profitLossReport')->name('profit-loss');
-});
+Route::get('laporan/penjualan', [SalesReportController::class, 'index'])->name('reports.sales');
+Route::get('laporan/laba-rugi', [ProfitLossReportController::class, 'index'])->name('reports.profit-loss');
 
 Route::post('logout', LogoutController::class)->name('logout');
