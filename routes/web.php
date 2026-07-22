@@ -20,11 +20,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::view('/', 'dashboard')->name('dashboard');
 
-    Route::get('kelola/user', [UserController::class, 'index'])->name('management.users');
-    Route::get('kelola/buah', [FruitController::class, 'index'])->name('management.fruits');
-    Route::get('kelola/supplier', [SupplierController::class, 'index'])->name('management.suppliers');
-    Route::get('kelola/stok', [StockController::class, 'index'])->name('management.stocks');
-    Route::get('kelola/transaksi', [TransactionController::class, 'index'])->name('management.transactions');
+    Route::get('data/user', [UserController::class, 'index'])->name('data.users');
+    Route::get('data/buah', [FruitController::class, 'index'])->name('data.fruits');
+    Route::post('data/buah', [FruitController::class, 'store'])->name('data.fruits.store');
+    Route::put('data/buah/{fruit}', [FruitController::class, 'update'])->name('data.fruits.update');
+    Route::delete('data/buah/{fruit}', [FruitController::class, 'destroy'])->name('data.fruits.destroy');
+    Route::get('data/supplier', [SupplierController::class, 'index'])->name('data.suppliers');
+    Route::get('data/stok', [StockController::class, 'index'])->name('data.stocks');
+    Route::get('data/transaksi', [TransactionController::class, 'index'])->name('data.transactions');
 
     Route::get('kasir', [CashierController::class, 'index'])->name('cashier');
 

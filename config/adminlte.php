@@ -374,12 +374,12 @@ return [
     'menu' => [
         ['text' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'bi bi-speedometer2', 'active' => ['/']],
         ['header' => 'OPERASIONAL TOKO'],
-        ['text' => 'Kelola User', 'route' => 'management.users', 'icon' => 'bi bi-people', 'active' => ['kelola/user*']],
-        ['text' => 'Kelola Data Buah', 'route' => 'management.fruits', 'icon' => 'bi bi-basket2', 'active' => ['kelola/buah*']],
-        ['text' => 'Kelola Supplier', 'route' => 'management.suppliers', 'icon' => 'bi bi-truck', 'active' => ['kelola/supplier*']],
-        ['text' => 'Kelola Stok', 'route' => 'management.stocks', 'icon' => 'bi bi-box-seam', 'active' => ['kelola/stok*']],
-        ['text' => 'Transaksi Penjualan / Kasir', 'route' => 'cashier', 'icon' => 'bi bi-cart-check', 'active' => ['kasir*']],
-        ['text' => 'Kelola Data Transaksi', 'route' => 'management.transactions', 'icon' => 'bi bi-receipt', 'active' => ['kelola/transaksi*']],
+        ['text' => 'User Account', 'route' => 'data.users', 'icon' => 'bi bi-people', 'active' => ['data/user*']],
+        ['text' => 'Data Buah', 'route' => 'data.fruits', 'icon' => 'bi bi-basket2', 'active' => ['data/buah*']],
+        ['text' => 'Data Supplier', 'route' => 'data.suppliers', 'icon' => 'bi bi-truck', 'active' => ['data/supplier*']],
+        ['text' => 'Data Stok', 'route' => 'data.stocks', 'icon' => 'bi bi-box-seam', 'active' => ['data/stok*']],
+        ['text' => 'Cashier Apps', 'route' => 'cashier', 'icon' => 'bi bi-cart-check', 'active' => ['kasir*']],
+        ['text' => 'Data Transaksi', 'route' => 'data.transactions', 'icon' => 'bi bi-receipt', 'active' => ['data/transaksi*']],
         [
             'text' => 'Laporan',
             'icon' => 'bi bi-bar-chart-line',
