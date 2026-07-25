@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\AuthenticatedSessionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FruitController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ProfitLossReportController;
@@ -18,7 +19,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::view('/', 'dashboard')->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('data/user', [UserController::class, 'index'])->name('data.users');
     Route::get('data/buah', [FruitController::class, 'index'])->name('data.fruits');

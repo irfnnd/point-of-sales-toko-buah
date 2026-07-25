@@ -55,9 +55,9 @@ return [
     */
 
     'logo' => '<b>POS</b> Toko Buah',
-    'logo_img' => 'vendor/adminlte/img/AdminLTELogo.png',
+    'logo_img' => 'img/logo-toko-buah.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
-    'logo_img_alt' => 'AdminLTE Logo',
+    'logo_img_alt' => 'Logo Toko Buah',
 
     /*
     |--------------------------------------------------------------------------
