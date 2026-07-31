@@ -55,12 +55,14 @@
                     <thead class="table-dark">
                         <tr>
                             <th style="width: 50px;" class="text-center">No</th>
-                            <th style="width: 150px;">Tanggal</th>
+                            <th style="width: 140px;">Tanggal</th>
                             <th>Buah</th>
                             <th>Supplier</th>
                             <th style="width: 100px;" class="text-center">Jenis</th>
-                            <th class="text-end" style="width: 120px;">Jumlah</th>
+                            <th class="text-end" style="width: 110px;">Jumlah</th>
                             <th class="text-end">Harga Satuan</th>
+                            <th style="width: 140px;">Estimasi Busuk</th>
+                            <th style="width: 130px;" class="text-center">Status Freshness</th>
                             <th>Catatan</th>
                         </tr>
                     </thead>
@@ -115,12 +117,32 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @if ($stock->expired_at)
+                                        <span class="fw-semibold">{{ $stock->expired_at->format('d M Y, H:i') }}</span>
+                                    @else
+                                        <span class="text-muted fst-italic">—</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if ($stock->type === 'in' && $stock->expired_at)
+                                        @if ($stock->expiry_status === 'expired')
+                                            <span class="badge text-bg-danger"><i class="bi bi-exclamation-octagon-fill me-1"></i>Busuk</span>
+                                        @elseif ($stock->expiry_status === 'near_expiry')
+                                            <span class="badge text-bg-warning text-dark"><i class="bi bi-exclamation-triangle-fill me-1"></i>Hampir Busuk</span>
+                                        @else
+                                            <span class="badge text-bg-success"><i class="bi bi-check-circle-fill me-1"></i>Segar</span>
+                                        @endif
+                                    @else
+                                        <span class="text-muted fst-italic">—</span>
+                                    @endif
+                                </td>
+                                <td>
                                     {{ $stock->note ?: '-' }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
+                                <td colspan="10" class="text-center text-muted py-4">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                     Belum ada data riwayat stok.
                                 </td>
@@ -137,7 +159,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 {{-- Note: Action route below doesn't exist yet, it's just a placeholder for the frontend --}}
-                <form action="#" method="POST" id="form-tambah-stok">
+                <form action="{{ route('data.stocks.store') }}" method="POST" id="form-tambah-stok">
                     @csrf
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title" id="modalTambahStokLabel">
@@ -207,6 +229,13 @@
                                 <input type="datetime-local" class="form-control" id="add-recorded-at" name="recorded_at" value="{{ now()->format('Y-m-d\TH:i') }}" required>
                             </div>
                         </div>
+                        <div class="row" id="wrapper-expired-at">
+                            <div class="col-md-6 mb-3">
+                                <label for="add-expired-at" class="form-label fw-semibold">Estimasi Busuk / Kedaluwarsa</label>
+                                <input type="datetime-local" class="form-control" id="add-expired-at" name="expired_at">
+                                <div class="form-text">Bisa dikosongkan untuk dihitung otomatis sesuai masa simpan buah.</div>
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label for="add-note" class="form-label fw-semibold">Catatan</label>
                             <textarea class="form-control" id="add-note" name="note" rows="2" placeholder="Tambahkan catatan jika perlu..."></textarea>
@@ -216,7 +245,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-lg me-1"></i>Batal
                         </button>
-                        <button type="submit" class="btn btn-primary" disabled title="Routing belum dibuat">
+                        <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-lg me-1"></i>Simpan
                         </button>
                     </div>
@@ -237,6 +266,19 @@ document.addEventListener('DOMContentLoaded', function () {
         fruitSelect.addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
             unitLabel.textContent = selectedOption.getAttribute('data-unit') || '-';
+        });
+    }
+
+    // ========== Dynamic Expiry Field Toggle ==========
+    const typeSelect = document.getElementById('add-type');
+    const wrapperExpired = document.getElementById('wrapper-expired-at');
+    if (typeSelect && wrapperExpired) {
+        typeSelect.addEventListener('change', function () {
+            if (this.value === 'in') {
+                wrapperExpired.style.display = 'flex';
+            } else {
+                wrapperExpired.style.display = 'none';
+            }
         });
     }
 

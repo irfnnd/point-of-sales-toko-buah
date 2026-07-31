@@ -21,8 +21,8 @@
     <div class="row">
 
         {{-- Total Jenis Buah --}}
-        <div class="col-lg-3 col-sm-6">
-            <div class="small-box text-bg-warning">
+        <div class="col-lg-3 col-sm-6 mb-3">
+            <div class="small-box text-bg-primary shadow-sm h-100 mb-0">
                 <div class="inner">
                     <h3>{{ $totalFruits }}</h3>
                     <p>Total Jenis Buah</p>
@@ -35,8 +35,8 @@
         </div>
 
         {{-- Stok Menipis --}}
-        <div class="col-lg-3 col-sm-6">
-            <div class="small-box text-bg-danger">
+        <div class="col-lg-3 col-sm-6 mb-3">
+            <div class="small-box text-bg-warning shadow-sm h-100 mb-0">
                 <div class="inner">
                     <h3>{{ $totalLowStock }}</h3>
                     <p>Stok Menipis (&lt; 10 unit)</p>
@@ -48,26 +48,26 @@
             </div>
         </div>
 
-        {{-- Transaksi Hari Ini --}}
-        <div class="col-lg-3 col-sm-6">
-            <div class="small-box text-bg-info">
+        {{-- Warning Buah Busuk / Kedaluwarsa --}}
+        <div class="col-lg-3 col-sm-6 mb-3">
+            <div class="small-box text-bg-danger shadow-sm h-100 mb-0">
                 <div class="inner">
-                    <h3>{{ $totalTransactionsToday }}</h3>
-                    <p>Transaksi Hari Ini</p>
+                    <h3>{{ $totalRottenWarningCount }}</h3>
+                    <p>Stok Busuk / Hampir Busuk</p>
                 </div>
-                <i class="small-box-icon bi bi-receipt"></i>
-                <a href="{{ route('data.transactions') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    Lihat Transaksi <i class="bi bi-arrow-right-circle ms-1"></i>
+                <i class="small-box-icon bi bi-exclamation-octagon-fill"></i>
+                <a href="{{ route('data.stocks') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Cek Kondisi <i class="bi bi-arrow-right-circle ms-1"></i>
                 </a>
             </div>
         </div>
 
         {{-- Pendapatan Hari Ini --}}
-        <div class="col-lg-3 col-sm-6">
-            <div class="small-box text-bg-success">
+        <div class="col-lg-3 col-sm-6 mb-3">
+            <div class="small-box text-bg-success shadow-sm h-100 mb-0">
                 <div class="inner">
                     <h3 style="font-size: 1.6rem;">Rp {{ number_format($revenueToday, 0, ',', '.') }}</h3>
-                    <p>Pendapatan Hari Ini</p>
+                    <p>Pendapatan Hari Ini ({{ $totalTransactionsToday }} Tx)</p>
                 </div>
                 <i class="small-box-icon bi bi-cash-coin"></i>
                 <a href="{{ route('reports.sales') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
@@ -79,13 +79,81 @@
     </div>
 
     {{-- ══════════════════════════════════════════════════════════════
-         ROW 2 — Stok Menipis + Transaksi Terbaru
+         ROW 2 — Peringatan Buah Busuk / Kedaluwarsa (Fitur Utama)
+    ══════════════════════════════════════════════════════════════ --}}
+    @if($totalRottenWarningCount > 0)
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card card-outline card-danger shadow-sm">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title fw-bold mb-0">
+                            <i class="bi bi-exclamation-octagon-fill me-2"></i>Peringatan Stok Buah Busuk & Hampir Busuk
+                            <span class="badge bg-white text-danger ms-2">{{ $totalRottenWarningCount }} Batch</span>
+                        </h3>
+                        <div class="card-tools">
+                            <a href="{{ route('data.stocks') }}" class="btn btn-light btn-sm fw-semibold">
+                                <i class="bi bi-box-seam me-1"></i> Kelola Stok
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="width: 40px;" class="text-center">No</th>
+                                        <th>Nama Buah</th>
+                                        <th>Supplier</th>
+                                        <th class="text-end" style="width: 120px;">Jumlah Batch</th>
+                                        <th style="width: 160px;">Estimasi Busuk</th>
+                                        <th class="text-center" style="width: 140px;">Status Freshness</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($rottenWarningStocksList as $index => $stock)
+                                        <tr class="{{ $stock->expiry_status === 'expired' ? 'table-danger' : 'table-warning' }}">
+                                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                            <td class="fw-semibold">
+                                                {{ $stock->fruit->name ?? 'Buah Dihapus' }}
+                                                @if($stock->fruit)
+                                                    <small class="text-muted d-block">{{ $stock->fruit->code }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ $stock->supplier->name ?? '—' }}
+                                            </td>
+                                            <td class="text-end fw-bold">
+                                                {{ number_format($stock->quantity, 0, ',', '.') }} {{ $stock->fruit->unit ?? '' }}
+                                            </td>
+                                            <td>
+                                                <i class="bi bi-calendar-event me-1"></i>{{ $stock->expired_at ? $stock->expired_at->format('d M Y, H:i') : '-' }}
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($stock->expiry_status === 'expired')
+                                                    <span class="badge text-bg-danger fs-6 px-3 py-2"><i class="bi bi-exclamation-octagon-fill me-1"></i>BUSUK / EXPIRED</span>
+                                                @elseif ($stock->expiry_status === 'near_expiry')
+                                                    <span class="badge text-bg-warning text-dark fs-6 px-3 py-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>HAMPIR BUSUK</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ══════════════════════════════════════════════════════════════
+         ROW 3 — Stok Menipis + Transaksi Terbaru
     ══════════════════════════════════════════════════════════════ --}}
     <div class="row">
 
         {{-- ── Stok Menipis ────────────────────────────────────────── --}}
-        <div class="col-lg-7">
-            <div class="card card-outline card-danger">
+        <div class="col-lg-7 mb-3">
+            <div class="card card-outline card-warning shadow-sm h-100">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>Stok Menipis
@@ -112,7 +180,6 @@
                                     <tr>
                                         <th style="width: 40px;" class="text-center">No</th>
                                         <th>Nama Buah</th>
-                                        <th>Kategori</th>
                                         <th class="text-end" style="width: 120px;">Sisa Stok</th>
                                         <th class="text-center" style="width: 110px;">Status</th>
                                     </tr>
@@ -139,13 +206,6 @@
                                                 {{ $fruit->name }}
                                                 <small class="text-muted d-block">{{ $fruit->code }}</small>
                                             </td>
-                                            <td>
-                                                @if($fruit->category)
-                                                    <span class="badge text-bg-info">{{ $fruit->category }}</span>
-                                                @else
-                                                    <span class="text-muted fst-italic">—</span>
-                                                @endif
-                                            </td>
                                             <td class="text-end fw-bold">
                                                 @if($qty <= 0)
                                                     <span class="text-danger">0 {{ $fruit->unit }}</span>
@@ -169,8 +229,8 @@
         </div>
 
         {{-- ── Transaksi Terbaru ───────────────────────────────────── --}}
-        <div class="col-lg-5">
-            <div class="card card-outline card-primary">
+        <div class="col-lg-5 mb-3">
+            <div class="card card-outline card-primary shadow-sm h-100">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="bi bi-clock-history me-2"></i>Transaksi Terbaru

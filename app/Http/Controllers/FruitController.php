@@ -21,10 +21,10 @@ class FruitController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:fruits,code',
             'name' => 'required|string|max:255',
-            'category' => 'nullable|string|max:100',
             'unit' => 'required|string|max:20',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
+            'shelf_life_days' => 'nullable|integer|min:1',
         ]);
 
         Fruit::create($validated);
@@ -37,10 +37,10 @@ class FruitController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:fruits,code,' . $fruit->id,
             'name' => 'required|string|max:255',
-            'category' => 'nullable|string|max:100',
             'unit' => 'required|string|max:20',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
+            'shelf_life_days' => 'nullable|integer|min:1',
         ]);
 
         $fruit->update($validated);

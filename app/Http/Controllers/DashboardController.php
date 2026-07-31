@@ -58,6 +58,22 @@ class DashboardController extends Controller
 
         $totalLowStock = $lowStockFruits->count();
 
+        // ── Expiry / Rotten Fruits Calculation ──────────────────────────────
+        $inStocksWithExpiry = Stock::with(['fruit', 'supplier'])
+            ->where('type', 'in')
+            ->whereNotNull('expired_at')
+            ->orderBy('expired_at', 'asc')
+            ->get();
+
+        $expiredStocks = $inStocksWithExpiry->filter(fn($s) => $s->expiry_status === 'expired')->values();
+        $nearExpiryStocks = $inStocksWithExpiry->filter(fn($s) => $s->expiry_status === 'near_expiry')->values();
+
+        $totalExpiredStocksCount = $expiredStocks->count();
+        $totalNearExpiryStocksCount = $nearExpiryStocks->count();
+        $totalRottenWarningCount = $totalExpiredStocksCount + $totalNearExpiryStocksCount;
+
+        $rottenWarningStocksList = $expiredStocks->concat($nearExpiryStocks)->take(10);
+
         // ── Recent transactions ───────────────────────────────────────────────
         $recentTransactions = Transaction::with('user')
             ->latest('transaction_date')
@@ -70,6 +86,10 @@ class DashboardController extends Controller
             'revenueToday',
             'lowStockFruits',
             'totalLowStock',
+            'totalExpiredStocksCount',
+            'totalNearExpiryStocksCount',
+            'totalRottenWarningCount',
+            'rottenWarningStocksList',
             'recentTransactions',
         ));
     }

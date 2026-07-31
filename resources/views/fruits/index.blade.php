@@ -56,11 +56,11 @@
                             <th style="width: 50px;" class="text-center">No</th>
                             <th style="width: 100px;">Kode</th>
                             <th>Nama Buah</th>
-                            <th>Kategori</th>
                             <th style="width: 80px;" class="text-center">Satuan</th>
                             <th class="text-end">Harga Beli</th>
                             <th class="text-end">Harga Jual</th>
                             <th class="text-end">Margin</th>
+                            <th style="width: 110px;" class="text-center">Masa Simpan</th>
                             <th style="width: 130px;" class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -72,13 +72,6 @@
                                     <span class="badge text-bg-secondary">{{ $fruit->code }}</span>
                                 </td>
                                 <td class="fw-semibold">{{ $fruit->name }}</td>
-                                <td>
-                                    @if ($fruit->category)
-                                        <span class="badge text-bg-info">{{ $fruit->category }}</span>
-                                    @else
-                                        <span class="text-muted fst-italic">—</span>
-                                    @endif
-                                </td>
                                 <td class="text-center">{{ $fruit->unit }}</td>
                                 <td class="text-end">Rp {{ number_format($fruit->purchase_price, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp {{ number_format($fruit->selling_price, 0, ',', '.') }}</td>
@@ -89,6 +82,13 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
+                                    @if ($fruit->shelf_life_days)
+                                        <span class="badge text-bg-secondary">{{ $fruit->shelf_life_days }} Hari</span>
+                                    @else
+                                        <span class="text-muted fst-italic">—</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
                                     <button type="button"
                                             class="btn btn-warning btn-sm btn-edit"
                                             data-bs-toggle="modal"
@@ -96,10 +96,10 @@
                                             data-id="{{ $fruit->id }}"
                                             data-code="{{ $fruit->code }}"
                                             data-name="{{ $fruit->name }}"
-                                            data-category="{{ $fruit->category }}"
                                             data-unit="{{ $fruit->unit }}"
                                             data-purchase-price="{{ $fruit->purchase_price }}"
                                             data-selling-price="{{ $fruit->selling_price }}"
+                                            data-shelf-life-days="{{ $fruit->shelf_life_days }}"
                                             title="Edit">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
@@ -159,13 +159,6 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="add-category" class="form-label fw-semibold">Kategori</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
-                                    <input type="text" class="form-control" id="add-category" name="category" placeholder="Contoh: Buah Impor" value="{{ old('category') }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
                                 <label for="add-unit" class="form-label fw-semibold">Satuan <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-rulers"></i></span>
@@ -179,21 +172,13 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="add-purchase-price" class="form-label fw-semibold">Harga Beli <span class="text-danger">*</span></label>
+                                <label for="add-shelf-life-days" class="form-label fw-semibold">Masa Simpan (Hari)</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="add-purchase-price" name="purchase_price" placeholder="0" value="{{ old('purchase_price') }}" min="0" step="any" required>
+                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                                    <input type="number" class="form-control" id="add-shelf-life-days" name="shelf_life_days" placeholder="Contoh: 7" value="{{ old('shelf_life_days') }}" min="1">
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="add-selling-price" class="form-label fw-semibold">Harga Jual <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="add-selling-price" name="selling_price" placeholder="0" value="{{ old('selling_price') }}" min="0" step="any" required>
-                                </div>
+                                <div class="form-text">Estimasi hari sebelum stok buah busuk/kedaluwarsa.</div>
                             </div>
                         </div>
                         {{-- Margin preview --}}
@@ -247,13 +232,6 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="edit-category" class="form-label fw-semibold">Kategori</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
-                                    <input type="text" class="form-control" id="edit-category" name="category">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
                                 <label for="edit-unit" class="form-label fw-semibold">Satuan <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-rulers"></i></span>
@@ -267,21 +245,13 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="edit-purchase-price" class="form-label fw-semibold">Harga Beli <span class="text-danger">*</span></label>
+                                <label for="edit-shelf-life-days" class="form-label fw-semibold">Masa Simpan (Hari)</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="edit-purchase-price" name="purchase_price" min="0" step="any" required>
+                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                                    <input type="number" class="form-control" id="edit-shelf-life-days" name="shelf_life_days" placeholder="Contoh: 7" min="1">
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit-selling-price" class="form-label fw-semibold">Harga Jual <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="edit-selling-price" name="selling_price" min="0" step="any" required>
-                                </div>
+                                <div class="form-text">Estimasi hari sebelum stok buah busuk/kedaluwarsa.</div>
                             </div>
                         </div>
                         {{-- Margin preview --}}
@@ -381,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const id    = this.dataset.id;
             const code  = this.dataset.code;
             const name  = this.dataset.name;
-            const cat   = this.dataset.category;
             const unit  = this.dataset.unit;
             const pp    = this.dataset.purchasePrice;
             const sp    = this.dataset.sellingPrice;
@@ -391,8 +360,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.getElementById('edit-code').value  = code;
             document.getElementById('edit-name').value  = name;
-            document.getElementById('edit-category').value = cat;
             document.getElementById('edit-unit').value  = unit;
+            document.getElementById('edit-shelf-life-days').value = this.dataset.shelfLifeDays || '';
             editPurchase.value = pp;
             editSelling.value  = sp;
 

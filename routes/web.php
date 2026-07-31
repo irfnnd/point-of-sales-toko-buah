@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('data/buah/{fruit}', [FruitController::class, 'destroy'])->name('data.fruits.destroy');
     Route::get('data/supplier', [SupplierController::class, 'index'])->name('data.suppliers');
     Route::get('data/stok', [StockController::class, 'index'])->name('data.stocks');
+    Route::post('data/stok', [StockController::class, 'store'])->name('data.stocks.store');
     Route::get('data/transaksi', [TransactionController::class, 'index'])->name('data.transactions');
 
     Route::get('kasir', [CashierController::class, 'index'])->name('cashier');
